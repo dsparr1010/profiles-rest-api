@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets
+from rest_framework.authentication import TokenAuthentication
 
-from profiles_api import serializers
+from profiles_api import serializers, models, permissions
 
 class TestView(APIView):
     """Test API View"""
@@ -91,3 +92,11 @@ class TestViewSet(viewsets.ViewSet):
         """Handle removing an object"""
         return Response({'http_method': 'DELETE'})
 
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """Handle creating and updating profile"""
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()
+    authentication_classes = (TokenAuthentication, ) # created as a tuple instead of a single item - which is why we leave a trailing comma
+    permission_classes = (permissions.UpdateOwnProfile, ) # every request that is made is passed to UpdateOwnProfile class and runs through 
+            # has_object_permission function to see if user has the permission to perform the action he/she is trying to perform
+    
