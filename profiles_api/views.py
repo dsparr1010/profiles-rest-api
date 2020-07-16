@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, filters
 from rest_framework.authentication import TokenAuthentication
 
 from profiles_api import serializers, models, permissions
@@ -100,3 +100,5 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.UpdateOwnProfile, ) # every request that is made is passed to UpdateOwnProfile class and runs through 
             # has_object_permission function to see if user has the permission to perform the action he/she is trying to perform
     
+    filter_backends = (filters.SearchFilter, )
+    search_fields = ('name', 'email',)
